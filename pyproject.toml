@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "tonecapture"
+version = "0.1.0"
+description = "A manager for Impulse Response and other tone capture files."
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+# Phase 1: Core & CLI
+sqlalchemy = "^2.0.23"
+alembic = "^1.13.1"  # For database migrations
+typer = {extras = ["rich"], version = "^0.9.0"} # For a rich CLI
+
+# Phase 2: Analysis
+librosa = "^0.10.1"
+numpy = "^1.26.2"
+faiss-cpu = "^1.7.4" # For fast similarity search
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
