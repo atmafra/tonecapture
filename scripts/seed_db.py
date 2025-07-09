@@ -3,17 +3,19 @@
 import os
 import sys
 
-# Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from tonecapture.db.database import SessionLocal, init_db
+from tonecapture.core.logger import logger
+from tonecapture.db.database import SessionLocal, _handle_database_error, init_db
 from tonecapture.db.models import (
-    Manufacturer,
-    Speaker,
-    Microphone,
     IrFile,
+    Manufacturer,
+    Microphone,
+    Speaker,
     ToneFileDeviceLink,
 )
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 def seed_database():
     """Creates the database and populates it with initial data."""
@@ -62,14 +64,19 @@ def seed_database():
         db.add(link2)
         db.commit()
 
-        print("Database seeded successfully!")
+        logger.info("Database seeded successfully!")
 
     except Exception as e:
-        print(f"An error occurred: {e}")
         db.rollback()
+        raise _handle_database_error(e) from e
+
     finally:
         db.close()
 
 
 if __name__ == "__main__":
-    seed_database()
+    try:
+        seed_database()
+    except Exception as e:
+        logger.error(e)
+        sys.exit(1)

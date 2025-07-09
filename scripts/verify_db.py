@@ -3,41 +3,50 @@
 import os
 import sys
 
-# Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from tonecapture.core.logger import logger
+from tonecapture.db.database import SessionLocal, _handle_database_read_error
+from tonecapture.db.models import IrFile, Manufacturer, Microphone, Speaker
 
-from tonecapture.db.database import SessionLocal
-from tonecapture.db.models import Manufacturer, Speaker, Microphone, IrFile
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 def verify_database():
     """Queries the database and prints the contents."""
     db = SessionLocal()
 
     try:
-        print("--- Manufacturers ---")
+        logger.info("--- Manufacturers ---")
         for manufacturer in db.query(Manufacturer).all():
-            print(manufacturer)
+            logger.info(manufacturer)
 
-        print("\n--- Speakers ---")
+        logger.info("\n--- Speakers ---")
         for speaker in db.query(Speaker).all():
-            print(speaker)
+            logger.info(speaker)
 
-        print("\n--- Microphones ---")
+        logger.info("\n--- Microphones ---")
         for microphone in db.query(Microphone).all():
-            print(microphone)
+            logger.info(microphone)
 
-        print("\n--- IR Files ---")
+        logger.info("\n--- IR Files ---")
         for ir_file in db.query(IrFile).all():
-            print(ir_file)
-            print(f"  Path: {ir_file.path}")
-            print(f"  Notes: {ir_file.notes}")
-            print("  Devices:")
-            for device in ir_file.devices:
-                print(f"    - {device}")
+            logger.info(ir_file)
+            logger.info(f"  Path: {ir_file.path}")
+            logger.info(f"  Notes: {ir_file.notes}")
+            logger.info("  Devices:")
+            for link in ir_file.device_links:
+                logger.info(f"    - {link.device} (as {link.role})")
+
+    except Exception as e:
+        raise _handle_database_read_error(e) from e
 
     finally:
         db.close()
 
 
 if __name__ == "__main__":
-    verify_database()
+    try:
+        verify_database()
+    except Exception as e:
+        logger.error(e)
+        sys.exit(1)
