@@ -3,7 +3,6 @@
 import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, LargeBinary
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
