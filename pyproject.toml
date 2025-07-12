@@ -18,6 +18,7 @@ librosa = "^0.10.1"
 numpy = "^1.26.2"
 faiss-cpu = "^1.7.4" # For fast similarity search
 sounddevice = "^0.5.2"
+plotly = "^6.2.0"
 
 [build-system]
 requires = ["poetry-core"]
